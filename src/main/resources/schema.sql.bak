@@ -1,0 +1,13 @@
+-- CREATE TABLE Persons(
+-- id int,
+-- lastName varchar(255),
+-- firstName varchar(255),
+-- address varchar(255),
+-- city varchar(255)
+-- );
+
+CREATE TABLE SYS_USER_ROLES(
+id INT PRIMARY KEY,
+SYS_USER_ID int NOT NULL ,
+SYS_ROLE_ID int NOT NULL
+);

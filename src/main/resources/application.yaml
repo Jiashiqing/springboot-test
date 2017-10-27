@@ -1,0 +1,67 @@
+#my:
+# name: justin
+# age: 22
+# number:  ${random.int}
+# uuid : ${random.uuid}
+# max: ${random.int(10)}
+# value: ${random.value}
+# greeting: hi,i'm  ${my.name}
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+    username: root
+    password: admin
+# jpa
+  jpa:
+      hibernate:
+        ddl-auto: update  # 第一次简表create  后面用update
+      show-sql: true
+
+# json
+  jackson:
+    serialization: true
+# rest
+  data:
+    rest:
+      base-path: /api
+
+#mybatis:
+#  mapper-locations: classpath*:mybatis/*Mapper.xml
+#  type-aliases-package: com.baidu.uuap.pojo
+
+# redis
+  redis:
+    host: localhost
+    port: 6379
+    database: 1
+    pool:
+      max-active: 8
+      max-wait: -1
+      max-idle: 500
+      min-idle: 0
+    timeout: 0
+
+# http
+  http:
+    multipart:
+      max-file-size: 128KB
+      max-request-size: 128KB
+
+# mail
+  mail:
+    host: smtp.163.com #mail2-in.baidu.com
+    port: 25
+    protocol: smtp
+#   auth: true
+    default-encoding: UTF-8
+    username: jiashiqing520@163.com
+    password: mengyang0614
+
+#thymeleaf
+    thymeleaf:
+      mode: HTML5
+      encoding: UTF-8
+      content-type: text/html
+      cache: false #开发时关闭缓存,不然没法看到实时页面

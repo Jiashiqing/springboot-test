@@ -1,0 +1,11 @@
+-- INSERT INTO Girl(id,cup_size,age) VALUES (10,'E',22);
+
+-- INSERT INTO SYS_USER (id,username,password) VALUES (1,'jia','jia');
+-- INSERT INTO SYS_USER (id,username,password) VALUES (2,'fang','fang');
+
+-- INSERT INTO SYS_ROLE (id,name) VALUES (1,'ROLE_ADMIN');
+-- INSERT INTO SYS_ROLE (id,name) VALUES (2,'ROLE_USER');
+
+INSERT INTO SYS_USER_ROLES(id,SYS_USER_ID, SYS_ROLE_ID) VALUES (1,1,1);
+INSERT INTO SYS_USER_ROLES(id,SYS_USER_ID, SYS_ROLE_ID) VALUES (2,2,2);
+
