@@ -14,11 +14,17 @@ import org.beetl.sql.ext.spring4.BeetlSqlScannerConfigurer;
 import org.beetl.sql.ext.spring4.SqlManagerFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
@@ -29,10 +35,6 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.listener.PatternTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -46,6 +48,9 @@ import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 
+//import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+//import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+
 @SpringBootApplication
 @EnableCaching
 @EnableScheduling
@@ -53,6 +58,8 @@ import java.util.concurrent.Executor;
 public class SpringbootTestApplication extends AsyncConfigurerSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(SpringbootTestApplication.class);
+
+    public final static String queueName = "spring-boot";
 
     @RequestMapping("/hello")
     public String home() {
@@ -153,7 +160,7 @@ public class SpringbootTestApplication extends AsyncConfigurerSupport {
 //        return dsm;
 //    }
 
-    //    注入消息接收者
+    // 注入消息接收者
     @Bean
     Receiver receiver(CountDownLatch latch) {
         return new Receiver(latch);
@@ -164,20 +171,23 @@ public class SpringbootTestApplication extends AsyncConfigurerSupport {
         return new CountDownLatch(1);
     }
 
-    //    一个连接工厂
-    @Bean
-    StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
-        return new StringRedisTemplate(connectionFactory);
-    }
-
+    // MessageListenerAdapter 要使用不同的监听器
+    //import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+    //import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
     @Bean
     MessageListenerAdapter listenerAdapter(Receiver receiver) {
         return new MessageListenerAdapter(receiver, "receiveMessage");
     }
 
+    /*************redisMQ***************/
+    // 一个连接工厂
+    @Bean
+    StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
+        return new StringRedisTemplate(connectionFactory);
+    }
 
     // 一个消息监听容器
-    @Bean
+/*    @Bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
                                             MessageListenerAdapter listenerAdapter) {
 
@@ -186,7 +196,40 @@ public class SpringbootTestApplication extends AsyncConfigurerSupport {
         container.addMessageListener(listenerAdapter, new PatternTopic("chat"));
 
         return container;
+    }*/
+    /*************redisMQ***************/
+
+
+    /*************rabbitMQ***************/
+    // 注入消息接收者
+    @Bean
+    Queue queue() {
+        return new Queue(queueName, false);
     }
+
+    @Bean
+    TopicExchange exchange() {
+        return new TopicExchange("spring-boot-exchange");
+    }
+
+    // 声明一个quene,一个exchange,并且绑定它们
+    @Bean
+    Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(queueName);
+    }
+
+    @Bean
+    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
+                                             MessageListenerAdapter listenerAdapter) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(queueName);
+        container.setMessageListener(listenerAdapter);
+        return container;
+    }
+
+    /*************rabbitMQ***************/
+
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
@@ -198,7 +241,7 @@ public class SpringbootTestApplication extends AsyncConfigurerSupport {
         return args -> {
             String quote = restTemplate.getForObject(
                     "http://gturnquist-quoters.cfapps.io/api/random", String.class);
-            logger.info("-==-=---------=-=-=-=-=-=-=-" + quote.toString());
+            logger.info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-" + quote.toString());
         };
     }
 

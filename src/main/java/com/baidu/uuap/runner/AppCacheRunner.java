@@ -1,4 +1,4 @@
-package com.baidu.uuap.service;
+package com.baidu.uuap.runner;
 
 import com.baidu.uuap.dao.BookRepository;
 import org.slf4j.Logger;

@@ -1,6 +1,7 @@
-package com.baidu.uuap.service;
+package com.baidu.uuap.runner;
 
 import com.baidu.uuap.pojo.User;
+import com.baidu.uuap.service.GitHubLookupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
