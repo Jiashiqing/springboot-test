@@ -29,7 +29,7 @@ public class CsvBeanValidator<T> implements Validator<T>, InitializingBean {
             for (ConstraintViolation<T> constraintViolation : constraintViolations) {
                 message.append(constraintViolation.getMessage() + "\n");
             }
-            throw new ValidationException(message.toString());
+//            throw new ValidationException(message.toString());
         }
     }
 

@@ -73,7 +73,7 @@ public class BatchConfig {
 
 
     // tag::jobstep[]
-    @Bean
+    @Bean(name = "userJob")
     public Job importUserJob(JobBuilderFactory jobs, @Qualifier("step1") Step s1,
                              @Qualifier("jobCompletionNotificationListener") JobExecutionListener listener) {
         return jobs.get("importUserJob")
