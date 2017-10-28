@@ -35,6 +35,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
@@ -47,6 +48,7 @@ import java.util.concurrent.Executor;
 
 @SpringBootApplication
 @EnableCaching
+@EnableScheduling
 @EnableAsync
 public class SpringbootTestApplication extends AsyncConfigurerSupport {
 
@@ -138,18 +140,18 @@ public class SpringbootTestApplication extends AsyncConfigurerSupport {
 
 
     //配置数据库
-    @Bean(name = "dataSource")
-    public DataSource dataSource() {
-        return DataSourceBuilder.create().url("jdbc:mysql://127.0.0.1:3306/test").username("root").password("admin").build();
-    }
+//    @Bean(name = "dataSource")
+//    public DataSource dataSource() {
+//        return DataSourceBuilder.create().url("jdbc:mysql://127.0.0.1:3306/test").username("root").password("admin").build();
+//    }
 
     //开启事务
-    @Bean(name = "transactionManager")
-    public DataSourceTransactionManager getDataSourceTransactionManager(@Qualifier("dataSource") DataSource datasource) {
-        DataSourceTransactionManager dsm = new DataSourceTransactionManager();
-        dsm.setDataSource(datasource);
-        return dsm;
-    }
+//    @Bean(name = "transactionManager")
+//    public DataSourceTransactionManager getDataSourceTransactionManager(/*@Qualifier("dataSource")*/ DataSource datasource) {
+//        DataSourceTransactionManager dsm = new DataSourceTransactionManager();
+//        dsm.setDataSource(datasource);
+//        return dsm;
+//    }
 
     //    注入消息接收者
     @Bean
