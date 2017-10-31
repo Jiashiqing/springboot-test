@@ -20,7 +20,6 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -35,6 +34,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -187,7 +189,7 @@ public class SpringbootTestApplication extends AsyncConfigurerSupport {
     }
 
     // 一个消息监听容器
-/*    @Bean
+    @Bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
                                             MessageListenerAdapter listenerAdapter) {
 
@@ -196,7 +198,7 @@ public class SpringbootTestApplication extends AsyncConfigurerSupport {
         container.addMessageListener(listenerAdapter, new PatternTopic("chat"));
 
         return container;
-    }*/
+    }
     /*************redisMQ***************/
 
 
@@ -218,6 +220,7 @@ public class SpringbootTestApplication extends AsyncConfigurerSupport {
         return BindingBuilder.bind(queue).to(exchange).with(queueName);
     }
 
+/*
     @Bean
     SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
                                              MessageListenerAdapter listenerAdapter) {
@@ -227,6 +230,7 @@ public class SpringbootTestApplication extends AsyncConfigurerSupport {
         container.setMessageListener(listenerAdapter);
         return container;
     }
+*/
 
     /*************rabbitMQ***************/
 
